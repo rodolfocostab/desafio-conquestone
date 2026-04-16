@@ -1,25 +1,31 @@
 # Arquitetura e análise
 
+Este documento resume a solução do desafio: duas APIs com cache em **Redis** (TTL distintos), métricas para **Prometheus**, painel em **Grafana**, e subida via **Docker Compose**. Complemente com figuras PNG no diretório `docs/` (por exemplo `arquitetura-runtime.png`, `arquitetura-git.png`, `arquitetura-infra.png`) se quiser diagramas visuais além do Mermaid abaixo.
+
 ## Diagrama (visão de runtime)
 
 ```mermaid
 flowchart LR
   Client([Cliente / navegador / curl])
-  PN["App Node.js\n:3001"]
+  PN["App Node.js\n:3000"]
   PP["App Python\n:8000"]
   R[(Redis)]
   P[Prometheus\n:9090]
+  G[Grafana\n:3002]
 
   Client --> PN
   Client --> PP
+  Client --> G
   PN --> R
   PP --> R
   P -->|scrape /metrics| PN
   P -->|scrape /metrics| PP
+  G -->|fonte de dados| P
 ```
 
 - **Redis**: camada de cache compartilhada; TTL **10 s** para a app Node e **60 s** para a app Python (via variável `CACHE_TTL_SECONDS`).
-- **Prometheus**: observabilidade mínima — coleta métricas expostas em `/metrics` nas duas aplicações.
+- **Prometheus**: coleta métricas expostas em `/metrics` nas duas aplicações.
+- **Grafana**: consome o Prometheus como datasource; inclui dashboard provisionado com taxa de requisições e totais de cache hit por app.
 
 ## Fluxos de atualização
 
@@ -29,7 +35,7 @@ flowchart LR
 flowchart TD
   Dev([Desenvolvedor])
   Repo[(Repositório Git)]
-  CI[CI opcional: build/test]
+  CI[CI: GitHub Actions\n docker compose build]
   Img[Imagens Docker]
   Run[docker compose up]
 

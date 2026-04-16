@@ -12,7 +12,8 @@ services:
   app-node:
     build: ./apps/node-service
     ports:
-      - "3001:3001"
+      # Host 3000 = app Node (costuma ser o que as pessoas testam primeiro). Dentro do container continua :3001.
+      - "3000:3001"
     environment:
       REDIS_URL: redis://redis:6379
       CACHE_TTL_SECONDS: "10"
@@ -46,3 +47,19 @@ services:
     depends_on:
       - app-node
       - app-python
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    ports:
+      - "3002:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_DEFAULT_THEME: dark
+      GF_SERVER_ROOT_URL: http://localhost:3002
+    volumes:
+      - ./infra/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./infra/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
