@@ -100,4 +100,4 @@ No GitHub, o workflow **Build Docker** (`.github/workflows/docker-build.yml`) ro
 ### Diagrama e análise
 
 - Documento principal: [docs/arquitetura.md](docs/arquitetura.md) — diagramas em Mermaid, fluxos de atualização e sugestões de melhoria.
-- **Imagens (opcional):** se estiverem versionadas em `docs/`, complementam o texto: `arquitetura-runtime.png`, `arquitetura-git.png`, `arquitetura-infra.png` (nomes sugeridos; ajuste se os seus forem outros).
+- **Imagens:** estao versionadas em `docs/`, complementam o texto: `arquitetura-runtime.png`, `arquitetura-git.png`, `arquitetura-infra.png`
