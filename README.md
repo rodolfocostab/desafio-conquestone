@@ -46,3 +46,31 @@ As respostas das aplicações devem ser cacheadas com **tempos de expiração di
 ## Como entregar
 
 Todo o conteúdo gerado no teste deve estar em um **repositório** de uma ferramenta de versionamento de código, **acessível para avaliação**.
+
+---
+
+## Implementação entregue neste repositório
+
+### Executar (um comando)
+
+Na raiz do projeto:
+
+```bash
+docker compose up --build -d
+```
+
+Com o Docker Desktop em execução, isso sobe **Redis**, a **app Node.js** (cache 10 s), a **app Python** (cache 60 s) e o **Prometheus**.
+
+### Endpoints
+
+| Serviço      | URL base           | Rotas do desafio | Observabilidade |
+|-------------|--------------------|------------------|-----------------|
+| App Node.js | http://localhost:3001 | `GET /fixed`, `GET /time` | `GET /metrics`, `GET /health` |
+| App Python  | http://localhost:8000 | `GET /fixed`, `GET /time` | `GET /metrics`, `GET /health` |
+| Prometheus  | http://localhost:9090 | — | UI de consultas e targets |
+
+Cache implementado com **Redis** (`SETEX` com TTL distinto por app via `CACHE_TTL_SECONDS`).
+
+### Diagrama e análise
+
+Consulte [docs/arquitetura.md](docs/arquitetura.md) para diagramas (Mermaid), fluxos de atualização e sugestões de melhoria.
